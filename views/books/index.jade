@@ -11,7 +11,9 @@ block content
         h3: a(href='/books/#{book.id}')= book.title
           a.glyphicon.glyphicon-remove(href='/books/#{book.id}/delete')
           a.glyphicon.glyphicon-pencil(href='/books/#{book.id}/edit')
-        h4= book.author 
+        for author in book.authors 
+          
+          h4: a(href='/authors/#{author.id}') #{author.first_name} #{author.last_name} 
         h5= book.genre
         p= book.description 
     

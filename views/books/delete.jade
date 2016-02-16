@@ -8,5 +8,9 @@ block content
       h2= book.title 
       h4= book.author 
       p= book.description 
+      div.well 
+        h3 Authors 
+        for author in book.authors 
+          h4: a(href='/authors/#{author.id}') #{author.first_name} #{author.last_name}
       form(action='/books/#{book.id}/delete' method='post')
         button.btn.btn-danger(type="submit") Delete #{book.title} ? 

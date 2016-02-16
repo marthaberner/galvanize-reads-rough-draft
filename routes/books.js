@@ -1,15 +1,30 @@
 var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
+var helpers = require('../lib/helpers')
 
 function Books() {
   return knex('books');
 }
 
-/* GET home page. */
+function Authors_Books() {
+  return knex('authors_books');
+}
+
+function Authors() {
+  return knex('authors');
+}
+
 router.get('/', function(req, res, next) {
-  Books().select().then(function (books) {
-    res.render('books/index', {books: books});
+  Books().select().then(function (records) {
+    Promise.all(records.map(function (book) {
+      return helpers.getBookAuthors(book).then(function (authors) {
+        book.authors = authors;
+        return book;
+      })
+    })).then(function (books) {
+      res.render('books/index', {books: books});
+    })
   })
 });
 
@@ -34,7 +49,10 @@ router.post('/', function (req, res, next) {
 
 router.get('/:id/delete', function(req, res, next) {
   Books().where('id', req.params.id).first().then(function (book) {
-    res.render('books/delete', {book: book});
+    helpers.getBookAuthors(book).then(function (authors) {
+      book.authors = authors;
+      res.render('books/delete', {book: book});
+    })
   })
 });
 
@@ -52,7 +70,10 @@ router.get('/:id/edit', function(req, res, next) {
 
 router.get('/:id', function(req, res, next) {
   Books().where('id', req.params.id).first().then(function (book) {
-    res.render('books/show', {book: book});
+    helpers.getBookAuthors(book).then(function (authors) {
+      book.authors = authors;
+      res.render('books/show', {book: book});
+    })
   })
 });
 
