@@ -18,10 +18,18 @@ function Authors_Books() {
 
 
 router.get('/', function(req, res, next) {
-  Authors().select().then(function (authors) {
-    res.render('authors/index', {authors: authors});
+  Authors().select().then(function (records) {
+    Promise.all(records.map(function (author) {
+      return helpers.getAuthorBooks(author).then(function (books) {
+        author.books = books;
+        return author;
+      })
+    })).then(function (authors) {
+      res.render('authors/index', {authors: authors});
+    })
   })
 });
+
 router.get('/new', function(req, res, next) {
   Books().select().then(function (books) {
     res.render('authors/new', {books: books});

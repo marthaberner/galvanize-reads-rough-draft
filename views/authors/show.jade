@@ -13,4 +13,4 @@ block content
       div.well
         ul
           for book in books 
-            li= book.title
+            li: a(href='/books/#{book.id}') #{book.title}

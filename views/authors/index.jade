@@ -12,4 +12,8 @@ block content
           a.glyphicon.glyphicon-remove(href='/authors/#{author.id}/delete')
           a.glyphicon.glyphicon-pencil(href='/authors/#{author.id}/edit')
         p= author.biography
-    
+      div.well
+        ul
+          for book in author.books 
+            li: a(href='/books/#{book.id}') #{book.title}
+  
